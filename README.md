@@ -38,3 +38,19 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## TO ADD Scahdcn component
 
 `npx shadcn@latest add button`
+
+
+## Note:
+- In Next.js, component is by default SSR (Server component)
+- Server component is component that runs in Server, 
+- so you can do like access database etc in the component
+- cant use client stuff like useState, DOM etc. 
+- You should have most of your component in server component. 
+- When user load the page, it doesnt need to load all the javascript dep so the page load faster
+- good for SEO, because the crawler can already have the entire page content downloaded without having to download javascript first
+
+- client component, component that runs in the client, like user browser. It will have access default react personality like DOM access, state etc. 
+- it's slow in the performance if you over use it
+- only use it when necessary
+- it's not good for SEO
+- You can call client component inside the server component
