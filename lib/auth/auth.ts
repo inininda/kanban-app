@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth"
 import { mongodbAdapter } from "better-auth/adapters/mongodb"
 import { MongoClient } from "mongodb"
 import { redirect } from "next/navigation"
+import { initializeUserBoard } from "../init-user-board"
 
 // async function that allows you to read the HTTP incoming request headers from a server component
 import { headers } from "next/headers"
@@ -18,6 +19,17 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          if (user.id) {
+            await initializeUserBoard(user.id)
+          }
+        }
+      }
+    }
+  }
 })
 
 export async function getSession() {

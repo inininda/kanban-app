@@ -1,11 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export type JobApplicationStatus = "applied" | "wish-list" | "interviewing" | "declined"
-
 export interface IJobApplication extends Document {
     company: string;
     position: string;
-    status: JobApplicationStatus;
+    status: string;
     columnId: mongoose.Types.ObjectId;
     boardId: mongoose.Types.ObjectId;
     userId: string;
