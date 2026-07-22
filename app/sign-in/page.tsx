@@ -11,13 +11,47 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { useState } from "react"
+import React, { useState } from "react"
+import { useRouter } from "next/navigation"
+import { signIn } from "@/lib/auth/auth-client"
 
 // TODO: fix the styling later
 
 export default function SignIn() {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
+
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
+
+  const router = useRouter()
+
+  async function handleSubmit(e: React.SubmitEvent) {
+    e.preventDefault()
+
+    setError("")
+    setLoading(true)
+
+    try {
+      const result = await signIn.email({
+        email,
+        password,
+      })
+
+      if (result.error) {
+        console.log(result.error.message)
+        throw result.error
+      }
+
+      router.push("/dashboard")
+    } catch (error) {
+      setError(
+        (error as { message: string }).message || "An unexpected error occured",
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-white p-4">
@@ -28,8 +62,9 @@ export default function SignIn() {
             Enter your credential to access your account
           </CardDescription>
         </CardHeader>
-        <form action="">
+        <form onSubmit={handleSubmit}>
           <CardContent>
+            {error && <div>{error}</div>}
             <div>
               <Label htmlFor="email">Email</Label>
               <Input
@@ -55,7 +90,9 @@ export default function SignIn() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit">Sign In</Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Signing in user..." : "Sign In"}
+            </Button>
             <p>
               Don't have an account? <Link href="/sign-up">Sign Up</Link>
             </p>

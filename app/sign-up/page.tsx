@@ -12,13 +12,47 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useState } from "react"
+import { signUp } from "@/lib/auth/auth-client"
+import { useRouter } from "next/navigation"
 
 // TODO: fix the styling later
-
 export default function SignUp() {
   const [name, setName] = useState<string>("")
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
+
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
+
+  const router = useRouter()
+
+  async function handleSubmit(e: React.SubmitEvent) {
+    e.preventDefault()
+
+    setError("")
+    setLoading(true)
+
+    try {
+      const result = await signUp.email({
+        name,
+        email,
+        password,
+      })
+
+      if (result.error) {
+        console.log(result.error.message)
+        throw result.error
+      }
+
+      router.push("/dashboard")
+    } catch (error) {
+      setError(
+        (error as { message: string }).message || "An unexpected error occured",
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-white p-4">
@@ -29,8 +63,9 @@ export default function SignUp() {
             Create an account to start tracking your job applications
           </CardDescription>
         </CardHeader>
-        <form action="">
+        <form onSubmit={handleSubmit}>
           <CardContent>
+            {error && <div>{error}</div>}
             <div>
               <Label htmlFor="name">Name</Label>
               <Input
@@ -66,7 +101,9 @@ export default function SignUp() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit">Sign Up</Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Creating account..." : "Sign Up"}
+            </Button>
             <p>
               Already have an account? <Link href="/sign-in">Sign In</Link>
             </p>
