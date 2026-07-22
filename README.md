@@ -63,6 +63,7 @@ for more details.
   page load faster
 - good for SEO, because the crawler can already have the entire page content
   downloaded without having to download javascript first
+- server component can be async
 
 - client component, component that runs in the client, like user browser. It
   will have access default react personality like DOM access, state etc.
@@ -73,6 +74,11 @@ for more details.
 
 - Lib folder
 - where you created utility file or any file for configuration
+- put NEXT_PUBLIC_ prefix so the environment variable accessible on client
+
+- proxy function -> like middleware
+- create proxy.ts in the root of the project
+- before version 16 it was middleware.ts
 
 ## MONGODB
 
@@ -87,3 +93,7 @@ for more details.
 - auth provider library
 - framework agnostic : a library or tool doesn't depend on a specific framework.
   You can use it with almost any framework—or even without one.
+
+
+## typescript
+- Abstract class is like a base class, you can not create instance out of it but you can extend it
